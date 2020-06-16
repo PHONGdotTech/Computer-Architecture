@@ -128,67 +128,6 @@ class CPU:
                 self.ir = value
                 running = self.branch_table[self.ir]()
 
-            # # LDI: loads valueB into register at valueA...register[valueA] = valueB
-            # if self.ir == 0b10000010:
-            #     operand_a = self.ram_read(self.pc+1)
-            #     operand_b = self.ram_read(self.pc+2)
-            #     self.register[operand_a] = operand_b
-            #     self.pc += 3
-
-            # # PRA: prints alpha-character in the register
-            # elif self.ir == 0b01001000:
-            #     print(self.register[self.pc+1])
-            #     self.pc += 2
-
-            # # PRN: prints a number in the register
-            # elif self.ir == 0b01000111:
-            #     index = self.ram_read(self.pc+1)
-            #     print(self.register[self.ram[self.pc+1]])
-            #     self.pc += 2
-
-            # # HLT: ends run()
-            # elif self.ir == 0b00000001:
-            #     running = False
-
-            # # MUL: multiply two values in register, assign to first register. print
-            # elif self.ir == 0b10100010:
-            #     operand_a = self.ram_read(self.pc+1)
-            #     operand_b = self.ram_read(self.pc+2)
-            #     self.alu("MUL", operand_a, operand_b)
-            #     print(self.register[operand_a])
-            #     self.pc += 2
-
-            # # DIV: Divide first value by second value, assign to first register. print
-            # elif self.ir == 0b10100011:
-            #     operand_a = self.ram_read(self.pc+1)
-            #     operand_b = self.ram_read(self.pc+2)
-            #     self.alu("DIV", operand_a, operand_b)
-            #     print(self.register[operand_a])
-            #     self.pc += 2
-
-            # # ADD: add two values in register, assign to first register. print
-            # elif self.ir == 0b10100000:
-            #     operand_a = self.ram_read(self.pc+1)
-            #     operand_b = self.ram_read(self.pc+2)
-            #     self.alu("ADD", operand_a, operand_b)
-            #     print(self.register[operand_a])
-            #     self.pc += 2
-
-            # # SUB: Subtract second value from first value, assign to first register. print
-            # elif self.ir == 0b10100001:
-            #     operand_a = self.ram_read(self.pc+1)
-            #     operand_b = self.ram_read(self.pc+2)
-            #     self.alu("SUB", operand_a, operand_b)
-            #     print(self.register[operand_a])
-            #     self.pc += 2
-                
-            # # Unknown instruction. End run()
-            # else:
-            #     print(f"Unknown instruction {self.ir} at address {self.pc}")
-            #     print(self.ram)
-            #     running = False
-            #     sys.exit(1)
-
     def ram_read(self, address):
         return self.ram[address]
 
