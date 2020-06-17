@@ -11,6 +11,8 @@ MUL = 0b10100010
 DIV = 0b10100011
 ADD = 0b10100000
 SUB = 0b10100001
+POP = 0b01000110
+PUSH = 0b01000101
 
 opcodes = [
     LDI,
@@ -21,6 +23,8 @@ opcodes = [
     DIV,
     ADD,
     SUB,
+    POP,
+    PUSH,
 ]
 
 class CPU:
@@ -30,6 +34,7 @@ class CPU:
         """Construct a new CPU."""
         self.register = [0] * 8
         self.ram = [0] * 256
+        self.SP = 7
         self.pc = 0
         self.ir = 0
         self.mar = 0
@@ -43,7 +48,9 @@ class CPU:
             MUL: self.handle_MUL,
             DIV: self.handle_DIV,
             ADD: self.handle_ADD,
-            SUB: self.handle_SUB
+            SUB: self.handle_SUB,
+            POP: self.handle_POP,
+            PUSH: self.handle_PUSH,
         }
 
 
@@ -117,6 +124,8 @@ class CPU:
         """Run the CPU."""
         running = None
 
+        self.register[self.SP] = 0xf4
+
         while running == None:
             value = self.ram[self.pc]
             if value not in opcodes:
@@ -178,4 +187,20 @@ class CPU:
         operand_b = self.ram_read(self.pc+2)
         self.alu("SUB", operand_a, operand_b)
         print(self.register[operand_a])
+        self.pc += 2
+
+    def handle_POP(self):
+        reg_num = self.ram[self.pc+1]
+        top_of_stack_addr = self.register[self.SP]
+        value = self.ram[top_of_stack_addr]
+        self.register[reg_num] = value
+        self.pc += 2
+        self.register[self.SP] += 1
+
+    def handle_PUSH(self):
+        self.register[self.SP] -= 1
+        reg_num = self.ram[self.pc+1]
+        value = self.register[reg_num]
+        top_of_stack_addr = self.register[self.SP]
+        self.ram[top_of_stack_addr] = value
         self.pc += 2
