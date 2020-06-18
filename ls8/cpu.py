@@ -13,6 +13,8 @@ ADD = 0b10100000
 SUB = 0b10100001
 POP = 0b01000110
 PUSH = 0b01000101
+CALL = 0b01010000
+RET = 0b00010001
 
 opcodes = [
     LDI,
@@ -25,6 +27,8 @@ opcodes = [
     SUB,
     POP,
     PUSH,
+    CALL,
+    RET,
 ]
 
 class CPU:
@@ -51,6 +55,8 @@ class CPU:
             SUB: self.handle_SUB,
             POP: self.handle_POP,
             PUSH: self.handle_PUSH,
+            CALL: self.handle_CALL,
+            RET: self.handle_RET,
         }
 
 
@@ -165,29 +171,29 @@ class CPU:
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
         self.alu("MUL", operand_a, operand_b)
-        print(self.register[operand_a])
-        self.pc += 2
+        # print(self.register[operand_a])
+        self.pc += 3
 
     def handle_DIV(self):
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
         self.alu("DIV", operand_a, operand_b)
-        print(self.register[operand_a])
-        self.pc += 2
+        # print(self.register[operand_a])
+        self.pc += 3
 
     def handle_ADD(self):
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
         self.alu("ADD", operand_a, operand_b)
-        print(self.register[operand_a])
-        self.pc += 2
+        # print(self.register[operand_a])
+        self.pc += 3
 
     def handle_SUB(self):
         operand_a = self.ram_read(self.pc+1)
         operand_b = self.ram_read(self.pc+2)
         self.alu("SUB", operand_a, operand_b)
-        print(self.register[operand_a])
-        self.pc += 2
+        # print(self.register[operand_a])
+        self.pc += 3
 
     def handle_POP(self):
         reg_num = self.ram[self.pc+1]
@@ -204,3 +210,18 @@ class CPU:
         top_of_stack_addr = self.register[self.SP]
         self.ram[top_of_stack_addr] = value
         self.pc += 2
+
+    def handle_CALL(self):
+        return_addr = self.pc+2
+
+        self.register[self.SP] -= 1
+        self.ram[self.register[self.SP]] = return_addr
+
+        reg_num = self.ram[self.pc+1]
+        subroutine_addr = self.register[reg_num]
+
+        self.pc = subroutine_addr
+
+    def handle_RET(self):
+        self.pc = self.ram[self.register[self.SP]]
+        self.register[self.SP] += 1
